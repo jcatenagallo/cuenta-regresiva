@@ -1,0 +1,197 @@
+---
+
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Cuenta Regresiva ✈️</title>
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			html, body {
+				height: 100%;
+				font-family: 'Space Grotesk', sans-serif;
+				overflow: hidden;
+			}
+
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+				color: #fff;
+				min-height: 100dvh;
+				position: relative;
+			}
+
+			body::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background: radial-gradient(ellipse at 20% 50%, rgba(120, 80, 255, 0.15), transparent 50%),
+							radial-gradient(ellipse at 80% 50%, rgba(255, 120, 80, 0.1), transparent 50%);
+				pointer-events: none;
+			}
+
+			.container {
+				text-align: center;
+				z-index: 1;
+				padding: 2rem;
+			}
+
+			.emoji {
+				font-size: 4rem;
+				margin-bottom: 1rem;
+				animation: float 3s ease-in-out infinite;
+			}
+
+			@keyframes float {
+				0%, 100% { transform: translateY(0); }
+				50% { transform: translateY(-12px); }
+			}
+
+			h1 {
+				font-size: clamp(1.5rem, 5vw, 2.5rem);
+				font-weight: 600;
+				margin-bottom: 0.5rem;
+				background: linear-gradient(90deg, #f8cdda, #fbab7e, #f7ce68);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+
+			.date {
+				font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+				color: rgba(255, 255, 255, 0.5);
+				margin-bottom: 3rem;
+				font-weight: 400;
+			}
+
+			.countdown {
+				display: flex;
+				gap: clamp(0.8rem, 3vw, 2rem);
+				justify-content: center;
+				flex-wrap: wrap;
+			}
+
+			.unit {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				min-width: 80px;
+			}
+
+			.number {
+				font-size: clamp(3rem, 10vw, 5.5rem);
+				font-weight: 700;
+				line-height: 1;
+				background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.6));
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+
+			.label {
+				font-size: clamp(0.7rem, 2vw, 0.9rem);
+				color: rgba(255, 255, 255, 0.4);
+				text-transform: uppercase;
+				letter-spacing: 0.15em;
+				margin-top: 0.5rem;
+			}
+
+			.separator {
+				font-size: clamp(2.5rem, 8vw, 4.5rem);
+				font-weight: 700;
+				color: rgba(255, 255, 255, 0.15);
+				align-self: flex-start;
+				line-height: 1;
+			}
+
+			.arrived {
+				font-size: clamp(2rem, 6vw, 3.5rem);
+				font-weight: 700;
+				background: linear-gradient(90deg, #f8cdda, #fbab7e, #f7ce68);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+				animation: pulse 2s ease-in-out infinite;
+			}
+
+			@keyframes pulse {
+				0%, 100% { opacity: 1; }
+				50% { opacity: 0.6; }
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="emoji">✈️</div>
+			<h1>Nos vamos de viaje</h1>
+			<p class="date">12 de septiembre 2026 · 21:15 hs</p>
+			<div class="countdown" id="countdown">
+				<div class="unit">
+					<span class="number" id="days">--</span>
+					<span class="label">Días</span>
+				</div>
+				<span class="separator">:</span>
+				<div class="unit">
+					<span class="number" id="hours">--</span>
+					<span class="label">Horas</span>
+				</div>
+				<span class="separator">:</span>
+				<div class="unit">
+					<span class="number" id="minutes">--</span>
+					<span class="label">Minutos</span>
+				</div>
+				<span class="separator">:</span>
+				<div class="unit">
+					<span class="number" id="seconds">--</span>
+					<span class="label">Segundos</span>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 12 de septiembre 2026, 21:15 horario Argentina (UTC-3)
+			const TARGET = new Date('2026-09-12T21:15:00-03:00').getTime();
+
+			function pad(n) {
+				return String(n).padStart(2, '0');
+			}
+
+			function update() {
+				const now = Date.now();
+				const diff = TARGET - now;
+
+				if (diff <= 0) {
+					document.getElementById('countdown').innerHTML =
+						'<span class="arrived">🎉 ¡Nos vamos! 🎉</span>';
+					return;
+				}
+
+				const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+				document.getElementById('days').textContent = days;
+				document.getElementById('hours').textContent = pad(hours);
+				document.getElementById('minutes').textContent = pad(minutes);
+				document.getElementById('seconds').textContent = pad(seconds);
+			}
+
+			update();
+			setInterval(update, 1000);
+		</script>
+	</body>
+</html>
